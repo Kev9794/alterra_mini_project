@@ -1,3 +1,6 @@
+import 'package:alterra_mini_project/views/screens/edit_barang_page.dart';
+import 'package:alterra_mini_project/views/screens/input_barang_page.dart';
+import 'package:alterra_mini_project/views/screens/list_barang_page.dart';
 import 'package:alterra_mini_project/views/screens/on_boarding_page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,9 +19,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (_) => const OnBoardingPage(),
         '/welcome': (_) => const OnBoardingPage(),
-        '/list': (_) => const OnBoardingPage(),
-        '/input': (_) => const OnBoardingPage(),
-        '/edit': (_) => const OnBoardingPage(),
+        '/list': (_) => const ListBarang(),
+        '/input': (_) => const InputBarang(),
+        '/edit': (_) => const EditBarang(),
       },
     );
   }
