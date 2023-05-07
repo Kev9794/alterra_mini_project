@@ -1,4 +1,4 @@
-package com.example.alterra_mini_project
+package com.kevinnat.alterra_mini_project
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.alterra_mini_project">
+    package="com.kevinnat.alterra_mini_project">
    <application
         android:label="alterra_mini_project"
         android:name="${applicationName}"

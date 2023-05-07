@@ -1,6 +1,11 @@
+import 'package:alterra_mini_project/views/screens/barang_widget.dart';
+import 'package:alterra_mini_project/views/screens/input_barang_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'barang_widget.dart' as brg;
 
 class ListBarang extends StatefulWidget {
   const ListBarang({super.key});
@@ -13,38 +18,84 @@ const List<String> list = <String>['Malang', 'Bali', 'Jakarta', 'Surabaya'];
 
 class _ListBarangState extends State<ListBarang> {
   String dropdownValue = list.first;
+
   @override
   Widget build(BuildContext context) {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    CollectionReference barangs = firestore.collection('barangs');
     return Scaffold(
         backgroundColor: const Color(0xFFFFEEB3),
         body: Column(
           children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.fromLTRB(30, 40, 30, 10),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF4B183),
-                    border: Border.all(
-                      color: const Color(0xFFF4B183),
-                    ),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(20),
-                    ),
-                  ),
-                  child: const Align(
-                    alignment: Alignment.topCenter,
-                    child: Text(
-                      'List Barang',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+            Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 20),
+                  child: Container(
+                    width: 600,
+                    height: 68,
+                    margin: const EdgeInsets.all(16.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      color: const Color.fromARGB(255, 152, 63, 0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Center(
+                                child: Row(
+                              children: const [
+                                SizedBox(
+                                  width: 40,
+                                ),
+                                Text(
+                                  'List',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 150,
+                                ),
+                                Text(
+                                  'Barang',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )),
+                          ],
+                        ),
                       ),
                     ),
-                  )),
+                  ),
+                ),
+                Container(
+                  height: 90,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.black,
+                    ),
+                    color: const Color.fromARGB(255, 255, 245, 226),
+                    image: const DecorationImage(
+                      fit: BoxFit.scaleDown,
+                      image: AssetImage('assets/logo/logo.png'),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Container(
               padding: const EdgeInsets.fromLTRB(130, 0, 30, 0),
@@ -115,51 +166,59 @@ class _ListBarangState extends State<ListBarang> {
                     Radius.circular(15),
                   ),
                 ),
-                child: ListView.builder(
+                child: ListView(
                   shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Card(
-                        color: const Color(0xFFF7F1E5),
-                        elevation: 3,
-                        child: ListTile(
-                          title: const Text(
-                            "Nama Barang",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: const Text(
-                            'Jumlah Stok :',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: SizedBox(
-                            width: 97,
-                            child: Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                    Icons.delete,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                  children: [
+                    // FutureBuilder(
+                    //   future: barangs.get(),
+                    //   builder: (_, snapshot) {
+                    //     if (snapshot.hasData) {
+                    //       return Column(
+                    //           children: snapshot.data!.docs
+                    //               .map((e) => CardBarang(
+                    //                   e.data()!['nama'], e.data()!['stok']))
+                    //               .toList());
+                    //     } else {
+                    //       return Text('Loading');
+                    //     }
+                    //   },
+                    // )
+                    StreamBuilder<QuerySnapshot>(
+                      stream: barangs
+                          .where('tempat', isEqualTo: dropdownValue)
+                          .snapshots(),
+                      builder: (_, snapshot) {
+                        if (snapshot.hasData) {
+                          return Column(
+                            children: (snapshot.data?.docs ?? [])
+                                .map((e) => CardBarang(
+                                      e['nama'],
+                                      e['stok'],
+                                      onDelete: () {
+                                        barangs.doc(e.id).delete();
+                                      },
+                                      onUpdate: () {
+                                        barangs.doc(e.id).update({
+                                          'nama': brg.editNama.text,
+                                          'tempat': brg.editTempat.text,
+                                          'harga': int.tryParse(
+                                                  brg.editHarga.text) ??
+                                              0,
+                                          'deskripsi': brg.editDeskripsi.text,
+                                          'stok':
+                                              int.tryParse(brg.editStok.text) ??
+                                                  0,
+                                        });
+                                      },
+                                    ))
+                                .toList(),
+                          );
+                        } else {
+                          return const Text('Loading');
+                        }
+                      },
+                    ),
+                  ],
                 )),
           ],
         ));

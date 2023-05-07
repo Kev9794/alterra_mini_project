@@ -3,8 +3,12 @@ import 'package:alterra_mini_project/views/screens/input_barang_page.dart';
 import 'package:alterra_mini_project/views/screens/list_barang_page.dart';
 import 'package:alterra_mini_project/views/screens/on_boarding_page.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

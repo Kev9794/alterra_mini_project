@@ -79,7 +79,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
             bodyAlignment: Alignment.bottomCenter,
             imageAlignment: Alignment.topCenter,
           ),
-          image: Image.asset('assets/logo/logo.png', width: 300),
+          image: Image.asset('assets/logo/logoSplash.png', width: 400),
           reverse: true,
         ),
       ],
