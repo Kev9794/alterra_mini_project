@@ -8,12 +8,17 @@ import 'list_barang_page.dart' as lists;
 class CardBarang extends StatefulWidget {
   final String nama;
   final int stok;
+  final int id;
+  final String tempat;
+  final int harga;
+  final String deskripsi;
   //// Pointer to Update Function
   final Function? onUpdate;
   // //// Pointer to Delete Function
   final Function? onDelete;
 
-  const CardBarang(this.nama, this.stok,
+  const CardBarang(
+      this.nama, this.stok, this.id, this.tempat, this.harga, this.deskripsi,
       {this.onUpdate, this.onDelete, super.key});
 
   @override
@@ -51,6 +56,31 @@ class _CardBarangState extends State<CardBarang> {
               children: [
                 IconButton(
                   onPressed: () {
+                    editNama.value = editNama.value.copyWith(
+                      text: widget.nama,
+                      selection:
+                          TextSelection.collapsed(offset: widget.nama.length),
+                    );
+                    editTempat.value = editTempat.value.copyWith(
+                      text: widget.tempat,
+                      selection:
+                          TextSelection.collapsed(offset: widget.tempat.length),
+                    );
+                    editHarga.value = editHarga.value.copyWith(
+                      text: widget.harga.toString(),
+                      selection: TextSelection.collapsed(
+                          offset: widget.harga.toString().length),
+                    );
+                    editDeskripsi.value = editDeskripsi.value.copyWith(
+                      text: widget.deskripsi,
+                      selection: TextSelection.collapsed(
+                          offset: widget.deskripsi.length),
+                    );
+                    editStok.value = editStok.value.copyWith(
+                      text: widget.stok.toString(),
+                      selection: TextSelection.collapsed(
+                          offset: widget.stok.toString().length),
+                    );
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
@@ -62,6 +92,7 @@ class _CardBarangState extends State<CardBarang> {
                             width: 200,
                             child: ListView(
                               children: [
+                                Text('ID : ${widget.id}'),
                                 TextFormField(
                                   controller: editNama,
                                   decoration:
