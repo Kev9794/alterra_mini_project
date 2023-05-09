@@ -39,8 +39,11 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
   firebase_core: ^2.10.0
   cloud_firestore: ^4.5.3
+  provider: ^6.0.5
+  fake_cloud_firestore: ^2.4.1+1
 
 dev_dependencies:
+  test:
   flutter_test:
     sdk: flutter
 

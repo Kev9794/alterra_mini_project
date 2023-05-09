@@ -1,10 +1,8 @@
-import 'package:alterra_mini_project/views/screens/list_barang_page.dart';
+import 'package:alterra_mini_project/views/provider/input_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:provider/provider.dart';
 
 class InputBarang extends StatefulWidget {
   const InputBarang({super.key});
@@ -14,135 +12,15 @@ class InputBarang extends StatefulWidget {
 }
 
 class _InputBarangState extends State<InputBarang> {
-  String idcode = "";
-  String getcode = "";
-  TextEditingController id = TextEditingController();
-  TextEditingController nama = TextEditingController();
-  TextEditingController tempat = TextEditingController();
-  TextEditingController harga = TextEditingController();
-  TextEditingController deskripsi = TextEditingController();
-  TextEditingController stok = TextEditingController();
-
-  Future scanbarcode() async {
-    getcode = await FlutterBarcodeScanner.scanBarcode(
-        "#009922", "Batalkan", true, ScanMode.DEFAULT);
-    setState(() {
-      id.text = getcode;
-    });
-  }
-
-  void plusStok() {
-    int stoklama = int.parse(stok.text.isNotEmpty ? stok.text : '0');
-    int stokBaru = stoklama + 1;
-    setState(() {
-      stok.text = stokBaru.toString();
-      stok.selection =
-          TextSelection.fromPosition(TextPosition(offset: stok.text.length));
-    });
-  }
-
-  void minusStok() {
-    int stoklama = int.parse(stok.text.isNotEmpty ? stok.text : '0');
-    int stokBaru = stoklama - 1;
-    setState(() {
-      stok.text = stokBaru.toString();
-
-      stok.selection =
-          TextSelection.fromPosition(TextPosition(offset: stok.text.length));
-    });
-  }
-
-  String? validasiId(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'ID tidak boleh kosong';
-    }
-
-    if (!value.contains(RegExp(r'^[0-9]*$'))) {
-      return 'ID telefon harus berupa angka';
-    }
-
-    return null;
-  }
-
-  String? validasiNama(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Nama Barang tidak boleh kosong';
-    }
-
-    final nameParts = value.split(' ');
-
-    for (final namePart in nameParts) {
-      if (namePart.contains(RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]'))) {
-        return 'Nama Barang tidak boleh mengandung angka atau karakter khusus';
-      }
-    }
-
-    return null;
-  }
-
-  String? validasiDeskripsi(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Deskripsi tidak boleh kosong';
-    }
-
-    final nameParts = value.split(' ');
-
-    for (final namePart in nameParts) {
-      if (namePart.contains(RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]'))) {
-        return 'Deskripsi tidak boleh mengandung angka atau karakter khusus';
-      }
-    }
-
-    return null;
-  }
-
-  String? validasiTempat(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Tempat tidak boleh kosong';
-    }
-
-    if (value == 'Malang' ||
-        value == 'Bali' ||
-        value == 'Jakarta' ||
-        value == 'Surabaya') {
-      return null;
-    }
-
-    return 'Tempat harus Malang/Bali/Jakarta/Surabaya';
-  }
-
-  String? validasiHarga(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Harga tidak boleh kosong';
-    }
-
-    if (!value.contains(RegExp(r'^[0-9]*$'))) {
-      return 'Stok harus berupa angka';
-    }
-
-    return null;
-  }
-
-  String? validasiStok(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Stok tidak boleh kosong';
-    }
-
-    if (!value.contains(RegExp(r'^[0-9]*$'))) {
-      return 'Nomor telefon harus berupa angka';
-    }
-
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<InputProvider>(context);
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference barangs = firestore.collection('barangs');
     var formKey = GlobalKey<FormState>();
     return Scaffold(
       body: Container(
-        color: Color.fromARGB(255, 244, 106, 0),
+        color: const Color.fromARGB(255, 244, 106, 0),
         child: Column(
           children: [
             Container(
@@ -193,9 +71,9 @@ class _InputBarangState extends State<InputBarang> {
                         const SizedBox(
                           height: 15,
                         ),
-                        Text(idcode),
+                        Text(provider.idcode),
                         TextFormField(
-                          controller: id,
+                          controller: provider.id,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(
                               Icons.key,
@@ -205,14 +83,14 @@ class _InputBarangState extends State<InputBarang> {
                             labelText: 'ID Barang',
                             border: OutlineInputBorder(),
                           ),
-                          validator: validasiId,
+                          validator: provider.validasiId,
                         ),
                         const SizedBox(
                           height: 15,
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            scanbarcode();
+                            provider.scanbarcode();
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +106,7 @@ class _InputBarangState extends State<InputBarang> {
                           height: 25,
                         ),
                         TextFormField(
-                          controller: nama,
+                          controller: provider.nama,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(
                               Icons.edit,
@@ -238,13 +116,13 @@ class _InputBarangState extends State<InputBarang> {
                             labelText: 'Nama Barang',
                             border: OutlineInputBorder(),
                           ),
-                          validator: validasiNama,
+                          validator: provider.validasiNama,
                         ),
                         const SizedBox(
                           height: 25,
                         ),
                         TextFormField(
-                          controller: tempat,
+                          controller: provider.tempat,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(
                               Icons.location_pin,
@@ -254,13 +132,13 @@ class _InputBarangState extends State<InputBarang> {
                             labelText: 'Tempat Barang',
                             border: OutlineInputBorder(),
                           ),
-                          validator: validasiTempat,
+                          validator: provider.validasiTempat,
                         ),
                         const SizedBox(
                           height: 25,
                         ),
                         TextFormField(
-                          controller: harga,
+                          controller: provider.harga,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(
                               Icons.attach_money,
@@ -270,7 +148,7 @@ class _InputBarangState extends State<InputBarang> {
                             labelText: 'Harga Barang',
                             border: OutlineInputBorder(),
                           ),
-                          validator: validasiHarga,
+                          validator: provider.validasiHarga,
                           keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
@@ -281,7 +159,7 @@ class _InputBarangState extends State<InputBarang> {
                         ),
                         TextFormField(
                           maxLines: 3,
-                          controller: deskripsi,
+                          controller: provider.deskripsi,
                           keyboardType: TextInputType.multiline,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(
@@ -292,7 +170,7 @@ class _InputBarangState extends State<InputBarang> {
                             labelText: 'Deskripsi Barang',
                             border: OutlineInputBorder(),
                           ),
-                          validator: validasiDeskripsi,
+                          validator: provider.validasiDeskripsi,
                         ),
                         const SizedBox(
                           height: 25,
@@ -304,7 +182,7 @@ class _InputBarangState extends State<InputBarang> {
                             SizedBox(
                               width: 190,
                               child: TextFormField(
-                                controller: stok,
+                                controller: provider.stok,
                                 decoration: const InputDecoration(
                                   prefixIcon: Icon(
                                     Icons.shopping_cart,
@@ -314,7 +192,7 @@ class _InputBarangState extends State<InputBarang> {
                                   labelText: 'Stok Barang',
                                   border: OutlineInputBorder(),
                                 ),
-                                validator: validasiStok,
+                                validator: provider.validasiStok,
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly,
@@ -328,7 +206,7 @@ class _InputBarangState extends State<InputBarang> {
                               ),
                               color: Colors.blue,
                               onPressed: () {
-                                plusStok();
+                                provider.plusStok();
                               },
                             ),
                             IconButton(
@@ -338,7 +216,7 @@ class _InputBarangState extends State<InputBarang> {
                               ),
                               color: Colors.grey,
                               onPressed: () {
-                                minusStok();
+                                provider.minusStok();
                               },
                             ),
                           ],
@@ -356,13 +234,22 @@ class _InputBarangState extends State<InputBarang> {
                                   //// ADD DATA FIREBASE
                                   if (formKey.currentState!.validate()) {
                                     barangs.add({
-                                      'id': int.tryParse(id.text) ?? 0,
-                                      'nama': nama.text,
-                                      'tempat': tempat.text,
-                                      'harga': int.tryParse(harga.text) ?? 0,
-                                      'deskripsi': deskripsi.text,
-                                      'stok': int.tryParse(stok.text) ?? 0,
+                                      'id': int.tryParse(provider.id.text) ?? 0,
+                                      'nama': provider.nama.text,
+                                      'tempat': provider.tempat.text,
+                                      'harga':
+                                          int.tryParse(provider.harga.text) ??
+                                              0,
+                                      'deskripsi': provider.deskripsi.text,
+                                      'stok':
+                                          int.tryParse(provider.stok.text) ?? 0,
                                     });
+                                    provider.id.clear();
+                                    provider.nama.clear();
+                                    provider.tempat.clear();
+                                    provider.harga.clear();
+                                    provider.deskripsi.clear();
+                                    provider.stok.clear();
                                     Navigator.pop(context);
                                   }
                                 },
@@ -382,6 +269,12 @@ class _InputBarangState extends State<InputBarang> {
                               child: ElevatedButton(
                                 onPressed: () async {
                                   // deleteBarang();
+                                  provider.id.clear();
+                                  provider.nama.clear();
+                                  provider.tempat.clear();
+                                  provider.harga.clear();
+                                  provider.deskripsi.clear();
+                                  provider.stok.clear();
                                   Navigator.pop(context);
                                 },
                                 style: const ButtonStyle(

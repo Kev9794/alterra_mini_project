@@ -1,10 +1,6 @@
 import 'package:alterra_mini_project/views/screens/barang_widget.dart';
-import 'package:alterra_mini_project/views/screens/input_barang_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'barang_widget.dart' as brg;
 
 class ListBarang extends StatefulWidget {
@@ -24,7 +20,7 @@ class _ListBarangState extends State<ListBarang> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference barangs = firestore.collection('barangs');
     return Scaffold(
-        backgroundColor: const Color(0xFFFFEEB3),
+        backgroundColor: const Color(0xFFFFE6C7),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -36,12 +32,12 @@ class _ListBarangState extends State<ListBarang> {
                     child: Container(
                       width: 600,
                       height: 68,
-                      margin: const EdgeInsets.all(16.0),
+                      margin: const EdgeInsets.fromLTRB(0, 30, 0, 20),
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        color: const Color.fromARGB(255, 152, 63, 0),
+                        color: const Color(0xFFF99417),
                         child: Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: Column(
@@ -120,7 +116,7 @@ class _ListBarangState extends State<ListBarang> {
                         value: dropdownValue,
                         icon: const Icon(Icons.arrow_downward),
                         elevation: 16,
-                        style: const TextStyle(color: Colors.indigo),
+                        style: const TextStyle(color: Colors.teal),
                         underline: Container(
                           height: 2,
                           color: Colors.grey,
@@ -140,18 +136,27 @@ class _ListBarangState extends State<ListBarang> {
                         }).toList(),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/input');
-                      },
-                      style: ButtonStyle(
-                        alignment: Alignment.centerRight,
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.green),
-                        foregroundColor:
-                            MaterialStateProperty.all(Colors.white),
+                    SizedBox(
+                      height: 49,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/input');
+                        },
+                        style: ButtonStyle(
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      side:
+                                          const BorderSide(color: Colors.red))),
+                          alignment: Alignment.centerRight,
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color(0xFFFF6000)),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                        ),
+                        child: const Text('add barang'),
                       ),
-                      child: const Text('add barang'),
                     )
                   ],
                 ),
@@ -173,20 +178,6 @@ class _ListBarangState extends State<ListBarang> {
                   child: ListView(
                     shrinkWrap: true,
                     children: [
-                      // FutureBuilder(
-                      //   future: barangs.get(),
-                      //   builder: (_, snapshot) {
-                      //     if (snapshot.hasData) {
-                      //       return Column(
-                      //           children: snapshot.data!.docs
-                      //               .map((e) => CardBarang(
-                      //                   e.data()!['nama'], e.data()!['stok']))
-                      //               .toList());
-                      //     } else {
-                      //       return Text('Loading');
-                      //     }
-                      //   },
-                      // )
                       StreamBuilder<QuerySnapshot>(
                         stream: barangs
                             .where('tempat', isEqualTo: dropdownValue)

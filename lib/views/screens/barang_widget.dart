@@ -1,9 +1,9 @@
 // ignore_for_file: unrelated_type_equality_checks
 
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:alterra_mini_project/views/provider/edit_provider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'list_barang_page.dart' as lists;
+import 'package:provider/provider.dart';
 
 class CardBarang extends StatefulWidget {
   final String nama;
@@ -34,6 +34,8 @@ TextEditingController editStok = TextEditingController();
 class _CardBarangState extends State<CardBarang> {
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<EditProvider>(context);
+    var formKey = GlobalKey<FormState>();
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: Card(
@@ -84,62 +86,87 @@ class _CardBarangState extends State<CardBarang> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          scrollable: true,
-                          title: const Text('Update Data'),
-                          content: SizedBox(
-                            height: 500,
-                            width: 200,
-                            child: ListView(
-                              children: [
-                                Text('ID : ${widget.id}'),
-                                TextFormField(
-                                  controller: editNama,
-                                  decoration:
-                                      const InputDecoration(hintText: 'Nama'),
-                                ),
-                                TextFormField(
-                                  controller: editTempat,
-                                  decoration:
-                                      const InputDecoration(hintText: 'Tempat'),
-                                ),
-                                TextFormField(
-                                  controller: editHarga,
-                                  decoration:
-                                      const InputDecoration(hintText: 'Harga'),
-                                ),
-                                TextFormField(
-                                  maxLines: 3,
-                                  controller: editDeskripsi,
-                                  decoration: const InputDecoration(
-                                      hintText: 'Deskripsi'),
-                                ),
-                                TextFormField(
-                                  controller: editStok,
-                                  decoration:
-                                      const InputDecoration(hintText: 'Stok'),
-                                ),
-                              ],
+                        return Form(
+                          key: formKey,
+                          child: AlertDialog(
+                            scrollable: true,
+                            title: const Text('Update Data'),
+                            content: SizedBox(
+                              height: 500,
+                              width: 200,
+                              child: ListView(
+                                children: [
+                                  Text('ID : ${widget.id}'),
+                                  TextFormField(
+                                    controller: editNama,
+                                    decoration:
+                                        const InputDecoration(hintText: 'Nama'),
+                                    validator: provider.validasiNama,
+                                  ),
+                                  TextFormField(
+                                    controller: editTempat,
+                                    decoration: const InputDecoration(
+                                        hintText: 'Tempat'),
+                                    validator: provider.validasiTempat,
+                                  ),
+                                  TextFormField(
+                                    controller: editHarga,
+                                    decoration: const InputDecoration(
+                                        hintText: 'Harga'),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    validator: provider.validasiHarga,
+                                  ),
+                                  TextFormField(
+                                    maxLines: 3,
+                                    controller: editDeskripsi,
+                                    decoration: const InputDecoration(
+                                        hintText: 'Deskripsi'),
+                                    validator: provider.validasiDeskripsi,
+                                  ),
+                                  TextFormField(
+                                    controller: editStok,
+                                    decoration:
+                                        const InputDecoration(hintText: 'Stok'),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    validator: provider.validasiStok,
+                                  ),
+                                ],
+                              ),
                             ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  editNama.clear();
+                                  editTempat.clear();
+                                  editHarga.clear();
+                                  editDeskripsi.clear();
+                                  editStok.clear();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    widget.onUpdate!();
+                                    Navigator.pop(context);
+                                    editNama.clear();
+                                    editTempat.clear();
+                                    editHarga.clear();
+                                    editDeskripsi.clear();
+                                    editStok.clear();
+                                  }
+                                },
+                                child: const Text('Send'),
+                              ),
+                            ],
                           ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                widget.onUpdate!();
-                                Navigator.pop(context);
-                                editNama.clear();
-                                editTempat.clear();
-                                editHarga.clear();
-                                editDeskripsi.clear();
-                                editStok.clear();
-                              },
-                              child: const Text('Send'),
-                            ),
-                          ],
                         );
                       },
                     );
