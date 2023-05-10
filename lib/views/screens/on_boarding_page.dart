@@ -37,7 +37,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
       globalBackgroundColor: Colors.white,
       pages: [
         PageViewModel(
-          title: "Selamat Datang di Warehouse App",
+          title: "Selamat Datang di Warehouse Manager App",
           body: "Catat seluruh stok anda hanya dalam satu aplikasi",
           image: _buildImage('ob1.jpg'),
           decoration: pageDecoration,
@@ -62,7 +62,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
           decoration: pageDecoration,
         ),
         PageViewModel(
-          title: "Warehouse App",
+          title: "WareMan - Warehouse Manager",
           bodyWidget: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
