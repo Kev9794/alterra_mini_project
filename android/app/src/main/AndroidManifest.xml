@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.alterra_mini_project">
+    package="com.kevinnat.alterra_mini_project">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="alterra_mini_project"
+        android:label="WareMan-Warehouse Manager"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
