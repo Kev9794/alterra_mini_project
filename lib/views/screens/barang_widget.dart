@@ -16,10 +16,12 @@ class CardBarang extends StatefulWidget {
   final Function? onUpdate;
   // //// Pointer to Delete Function
   final Function? onDelete;
+  // //// Pointer to Detail Function
+  final Function? onDetail;
 
   const CardBarang(
       this.nama, this.stok, this.id, this.tempat, this.harga, this.deskripsi,
-      {this.onUpdate, this.onDelete, super.key});
+      {this.onUpdate, this.onDelete, this.onDetail, super.key});
 
   @override
   State<CardBarang> createState() => _CardBarangState();
@@ -53,7 +55,7 @@ class _CardBarangState extends State<CardBarang> {
             overflow: TextOverflow.ellipsis,
           ),
           trailing: SizedBox(
-            width: 97,
+            width: 145,
             child: Row(
               children: [
                 IconButton(
@@ -93,7 +95,7 @@ class _CardBarangState extends State<CardBarang> {
                             title: const Text('Update Data'),
                             content: SizedBox(
                               height: 500,
-                              width: 200,
+                              width: 250,
                               child: ListView(
                                 children: [
                                   Text('ID : ${widget.id}'),
@@ -176,6 +178,17 @@ class _CardBarangState extends State<CardBarang> {
                   },
                   icon: const Icon(
                     Icons.edit,
+                    color: Colors.grey,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    if (widget.onDetail != null) {
+                      widget.onDetail!();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.info,
                     color: Colors.grey,
                   ),
                 ),

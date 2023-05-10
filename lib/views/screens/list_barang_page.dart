@@ -1,4 +1,6 @@
+import 'package:alterra_mini_project/models/form_model.dart';
 import 'package:alterra_mini_project/views/screens/barang_widget.dart';
+import 'package:alterra_mini_project/views/screens/detail_barang_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'barang_widget.dart' as brg;
@@ -209,6 +211,22 @@ class _ListBarangState extends State<ListBarang> {
                                               int.tryParse(brg.editStok.text) ??
                                                   0,
                                         });
+                                      },
+                                      onDetail: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (_) => DetailBarang(
+                                              (FormModel(
+                                                e['id'].toString(),
+                                                e['nama'],
+                                                e['tempat'],
+                                                e['harga'],
+                                                e['deskripsi'],
+                                                e['stok'],
+                                              )),
+                                            ),
+                                          ),
+                                        );
                                       },
                                     ),
                                   )
