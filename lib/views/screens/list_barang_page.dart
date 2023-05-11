@@ -183,7 +183,6 @@ class _ListBarangState extends State<ListBarang> {
                       StreamBuilder<QuerySnapshot>(
                         stream: barangs
                             .where('tempat', isEqualTo: dropdownValue)
-                            .orderBy('stok')
                             .snapshots(),
                         builder: (_, snapshot) {
                           if (snapshot.hasData) {
